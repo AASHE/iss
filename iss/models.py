@@ -164,9 +164,11 @@ class Organization(models.Model):
         self.exclude_from_website = False
         self.is_defunct = org.is_defunct
 
-        self.org_type = OrganizationType.objects.get(
-            id=org.org_type)
-
+        try:
+            self.org_type = OrganizationType.objects.get(id=org.org_type)
+        except DoesNotExist:
+            logger.debug('org type {name} into org type' % org)
+            
         try:
             institution_type_yaml = yaml.safe_load(
                 str(org.extra_data["InstitutionType__c"]))
